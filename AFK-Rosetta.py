@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium import webdriver
 from threading import Thread
 from sys import argv
-from time import sleep
+from time import time, sleep
 
 
 class Rosetta:
@@ -139,7 +139,16 @@ class Rosetta:
                 sleep(1)
 
         return
+        
+    def get_run_time_str(self) -> str:
+        run_time = round(time() - self.start_time)
 
+        hours = run_time // 3600
+        mins = (run_time % 3600) // 60
+        secs = run_time % 60
+        
+        return f"{hours}h:{mins}m:{secs}s"
+        
     def main(self, email: str, password: str):
         self.driver = webdriver.Chrome(options=self.options)
         self.wait = WebDriverWait(self.driver, self.timeout)
@@ -164,14 +173,18 @@ class Rosetta:
             loop_thread.start()
 
             
+            self.start_time = time()
             while self.looping:
-                if input("Type 'q' to quit : ") == "q":
+                inp = input("Type 'q' to quit or 't' to display how long the program has been running : ")
+                if  inp == "q":
                     print("Exiting")
                     self.looping = False
                     loop_thread.join()
 
+                elif inp == "t":
+                    print(f"The program has been running for {self.get_run_time_str()}.")
+
             self.driver.quit()
-                
             
         except Exception as e:
             print(f"There was an error while looping throught the courses. Error : {e}")
@@ -183,3 +196,4 @@ if __name__ == "__main__":
         rosetta.main(argv[1], argv[2])
     else:
         print("Usage : path_to_rosetta.py email password")
+
