@@ -23,3 +23,6 @@ There is no need to install any browser extensions, click around, or manually in
 python rosetta.py <rosetta_email> <rosetta_password> <time_in_seconds>
 ```
 4. **Leave it in the background and go back to doing more useful stuff**
+
+
+If it doesn't work for you, open a issue and include the sreenshots took by the script (if taken)
