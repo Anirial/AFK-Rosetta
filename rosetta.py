@@ -345,7 +345,7 @@ class Rosetta:
                     print(f"[-] Request {i+1} was not successful (HTTP Code {status})")
                     error += 1
             
-            print(f"{sent} packets were correctly sent and {error} encountered an error for a total of {sent+ error} packet sent. Average : {round(sent / (sent + error), 2)}%")
+            print(f"{sent} packets were correctly sent and {error} encountered an error for a total of {sent+ error} packet sent. Average : {round(sent / (sent + error), 2) * 100}%")
             print("Thanks for playing !")
         except Exception as e:
             print(f"Global error : {e}")
@@ -355,7 +355,7 @@ class Rosetta:
 if __name__ == "__main__":
     if len(argv) == 4:
         rosetta = Rosetta()
-        params = {"time": argv[3] * 1000}
+        params = {"time": int(argv[3]) * 1000}
         rosetta.main(argv[1], argv[2], params)
 
     elif "help" in argv:
