@@ -11,9 +11,8 @@ import requests
 from random import randint
 
 class Rosetta:
-    def __init__(self, timeout: int = 10, course_time: int = 30, headless: bool = True):
+    def __init__(self, timeout: int = 5, headless: bool = True):
         self.timeout = timeout
-        self.course_time = course_time
         self.options = webdriver.ChromeOptions()
         
         if headless:
@@ -84,7 +83,7 @@ class Rosetta:
             course_element = all_course_element[0]
             self.driver.execute_script("arguments[0].click();", course_element)
 
-            end_time = time() + self.timeout
+            end_time = time() + self.timeout * 2
             
             while time() < end_time:
             
@@ -258,7 +257,6 @@ class Rosetta:
     def main(self, email: str, password: str, params: dict):
         self.driver = webdriver.Chrome(options=self.options)
         self.wait = WebDriverWait(self.driver, self.timeout)
-        self.wait_course = WebDriverWait(self.driver, self.course_time)
         
         try:
             print("Login in Rosetta Stone.")
@@ -271,7 +269,7 @@ class Rosetta:
                 print("Unable to start the lesson.")
                 return
           
-            data = self.generate_original_request(3, 3)
+            data = self.generate_original_request(self.timeout, 3)
             self.driver.get("https://totale.rosettastone.com/sign_out")
             self.driver.quit()
 
@@ -342,10 +340,14 @@ class Rosetta:
                     print(f"[+]Request {display_iterations}/{display_iterations} sent successfully !")
                     sent += 1
                 else:
-                    print(f"[-] Request {i+1} was not successful (HTTP Code {status})")
+                    print(f"[-] Request {display_iterations} was not successful (HTTP Code {status})")
                     error += 1
             
-            print(f"{sent} packets were correctly sent and {error} encountered an error for a total of {sent+ error} packet sent. Average : {round(sent / (sent + error), 2) * 100}%")
+            total = sent + error
+            if total > 0:
+                print(f"{sent} packets were correctly sent and {error} encountered an error for a total of {total} packet sent. Average : {round(sent / total, 2) * 100}%")
+            else:
+                print("No packet was sent")
             print("Thanks for playing !")
         except Exception as e:
             print(f"Global error : {e}")
