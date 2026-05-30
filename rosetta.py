@@ -11,7 +11,7 @@ import requests
 from random import randint
 
 class Rosetta:
-    def __init__(self, timeout: int = 5, headless: bool = True):
+    def __init__(self, timeout: int = 20, headless: bool = True):
         self.timeout = timeout
         self.options = webdriver.ChromeOptions()
         
@@ -211,6 +211,12 @@ class Rosetta:
             sleep(1)
             print("Failed to generate the request")
 
+        try:
+            filename = f"unable_to_generate_request_{int(time())}.png"
+            self.driver.save_screenshot(filename)
+            print(f"[!] Screenshot saved for analysis : {filename}")
+        except Exception:
+            pass
         return None
 
     def build_root(self, data: dict[str, str]) -> Element | None:
@@ -266,6 +272,12 @@ class Rosetta:
             
             print("Starting the lesson.")
             if not self.start_lesson(): 
+                try:
+                    filename = f"unable_to_start_lesson_{int(time())}.png"
+                    self.driver.save_screenshot(filename)
+                    print(f"[!] Screenshot saved for analysis : {filename}")
+                except Exception:
+                    pass
                 print("Unable to start the lesson.")
                 return
           
